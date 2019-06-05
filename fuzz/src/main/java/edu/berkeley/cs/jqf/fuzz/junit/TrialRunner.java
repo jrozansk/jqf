@@ -39,9 +39,11 @@ import org.junit.runners.model.Statement;
 public class TrialRunner extends BlockJUnit4ClassRunner {
     private final FrameworkMethod method;
     protected final Object[] args;
+    private final Object testInstance;
 
-    public TrialRunner(Class<?> testClass, FrameworkMethod method, Object[] args) throws InitializationError {
+    public TrialRunner(Class<?> testClass, Object testInstance, FrameworkMethod method, Object[] args) throws InitializationError {
         super(testClass);
+        this.testInstance = testInstance;
         this.method = method;
         this.args = args;
     }
@@ -56,7 +58,7 @@ public class TrialRunner extends BlockJUnit4ClassRunner {
         assert(this.method == frameworkMethod);
         return new Statement() {
             @Override public void evaluate() throws Throwable {
-                frameworkMethod.invokeExplosively(test, args);
+                frameworkMethod.invokeExplosively(testInstance, args);
             }
         };
     }

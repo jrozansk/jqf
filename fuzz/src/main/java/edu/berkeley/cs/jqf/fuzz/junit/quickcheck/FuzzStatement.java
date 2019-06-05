@@ -73,15 +73,17 @@ import static edu.berkeley.cs.jqf.fuzz.guidance.Result.*;
 public class FuzzStatement extends Statement {
     private final FrameworkMethod method;
     private final TestClass testClass;
+    private final Object testInstance;
     private final Map<String, Type> typeVariables;
     private final GeneratorRepository generatorRepository;
     private final List<Class<?>> expectedExceptions;
     private final List<Throwable> failures = new ArrayList<>();
 
-    public FuzzStatement(FrameworkMethod method, TestClass testClass,
+    public FuzzStatement(FrameworkMethod method, TestClass testClass, Object testInstance,
                          GeneratorRepository generatorRepository) {
         this.method = method;
         this.testClass = testClass;
+        this.testInstance = testInstance;
         this.typeVariables =
                 GenericsResolver.resolve(testClass.getJavaClass())
                         .method(method.getMethod())
@@ -162,7 +164,7 @@ public class FuzzStatement extends Statement {
                     }
 
                     // Attempt to run the trial
-                    new TrialRunner(testClass.getJavaClass(), method, args).run();
+                    new TrialRunner(testClass.getJavaClass(), testInstance, method, args).run();
 
                     // If we reached here, then the trial must be a success
                     result = SUCCESS;

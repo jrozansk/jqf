@@ -50,6 +50,7 @@ import org.junit.runners.model.Statement;
 public class JQF extends JUnitQuickcheck {
 
     protected final GeneratorRepository generatorRepository;
+    private Object testInstance;
 
     @SuppressWarnings("unused") // Invoked reflectively by JUnit
     public JQF(Class<?> clazz) throws InitializationError {
@@ -82,9 +83,13 @@ public class JQF extends JUnitQuickcheck {
         }
     }
 
+    public void setTestInstance(Object testInstance) {
+        this.testInstance = testInstance;
+    }
+
     @Override public Statement methodBlock(FrameworkMethod method) {
         if (method.getAnnotation(Fuzz.class) != null) {
-            return new FuzzStatement(method, getTestClass(), generatorRepository);
+            return new FuzzStatement(method, getTestClass(), testInstance,  generatorRepository);
         }
         return super.methodBlock(method);
     }
